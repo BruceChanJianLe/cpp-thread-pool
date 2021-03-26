@@ -21,6 +21,11 @@ class threadPool
             start(numThreads);
         }
 
+        ~threadPool()
+        {
+            stop();
+        }
+
         void enqueue(std::function<void()> task)
         {
             // Lock mutex while adding new task
@@ -81,6 +86,9 @@ class threadPool
                                 }
 
                                 // Run task
+                                /*
+                                    if you want to avoid data racing, you can put task_to_be_run() in the lock scope
+                                */
                                 task_to_be_run();
                             }
                         }
@@ -122,8 +130,6 @@ int main()
             }
         );
     }
-
-    std::this_thread::sleep_for(std::chrono::seconds(10));
 
     return 0;
 }
